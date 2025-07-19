@@ -1,0 +1,1 @@
+export const mcp_base_url = "http://localhost:8000/mcp"

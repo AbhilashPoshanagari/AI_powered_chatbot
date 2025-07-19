@@ -1,0 +1,58 @@
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f7f7f8;
+}
+
+.sidenav-container {
+  flex: 1;
+  height: 100vh;
+}
+
+.sidebar {
+  width: 280px;
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  border-right: 1px solid #e5e5e6;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f7f7f8;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.menu-button {
+  margin-right: 16px;
+  color: #666;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  color: #333;
+  margin: 0;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 60px);
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 20px;
+}

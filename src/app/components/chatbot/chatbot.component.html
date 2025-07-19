@@ -1,0 +1,10 @@
+<div class="chat-messages">
+    @for (message of messages; track message) {
+      <div class="message-container" [ngClass]="{'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot'}">
+        <div class="message-content">
+          <div class="message-text">{{message.content}}</div>
+          <div class="message-time">{{message.timestamp | date:'shortTime'}}</div>
+        </div>
+      </div>
+    }
+</div>

@@ -1,0 +1,26 @@
+<div class="sidebar-container">
+  <div class="sidebar-header">
+    <button mat-button class="new-chat-button">
+      <mat-icon>add</mat-icon>
+      <span>New chat</span>
+    </button>
+  </div>
+
+  <div class="sidebar-scrollable">
+    <mat-nav-list>
+      @for (chat of chats; track chat) {
+      <mat-list-item>
+        <mat-icon matListItemIcon>{{chat.icon}}</mat-icon>
+        <div matListItemTitle>{{chat.title}}</div>
+      </mat-list-item>
+      }
+    </mat-nav-list>
+  </div>
+
+  <div class="sidebar-footer">
+    <button mat-button class="user-button">
+      <mat-icon class="user-icon">account_circle</mat-icon>
+      <span class="username">Abhilash Poshanagari</span>
+    </button>
+  </div>
+</div>

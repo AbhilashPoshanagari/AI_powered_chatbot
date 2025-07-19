@@ -1,0 +1,7 @@
+export interface NamedItem {
+    name: string; 
+    displayName?: string; // Optional for display purposes
+    description?: string; // Optional for additional information
+    uri?: string; // Optional for resources
+    parameters?: any; // Optional for tools
+}
