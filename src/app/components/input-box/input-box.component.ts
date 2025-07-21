@@ -21,6 +21,9 @@ import { NamedItem } from '../../common'; // Assuming you have a common.ts file 
 })
 export class InputBoxComponent implements AfterViewInit {
   @Output() sendMessage = new EventEmitter<string>();
+  @Output() sendTool = new EventEmitter<Array<NamedItem>>();
+  @Output() sendResource = new EventEmitter<string>();
+  @Output() sendPrompt = new EventEmitter<string>();
   message = '';
   showToolsMenu = false;
   showResourcesMenu = false;
@@ -39,6 +42,7 @@ export class InputBoxComponent implements AfterViewInit {
   submitMessage() {
     if (this.message.trim()) {
       this.sendMessage.emit(this.message);
+      this.sendTool.emit(this.tools);
       this.message = '';
     }
   }
@@ -66,9 +70,18 @@ export class InputBoxComponent implements AfterViewInit {
     // Logic that needs to run after the view has been initialized
      try {
       await this.mcpService.connect();
-      this.tools = await this.mcpService.listTools();
-      this.prompts = await this.mcpService.listPrompts();
-      this.resources = await this.mcpService.listResources();
+      this.mcpService.listTools().subscribe((tools: any) => {
+        console.log("Tools 1 : ", tools)
+        this.tools = tools.tools;
+      })
+      this.mcpService.listPrompts().subscribe((prompts: any) => {
+        console.log("Prompts 1 : ", prompts)
+          this.prompts = prompts.prompts;
+      });
+      this.mcpService.listResources().subscribe((resources: any) => {
+        console.log("Resources 1 : ", resources)
+          this.resources = resources.resources;
+      });
       console.log('Tools:', this.tools);
       console.log('Prompts:', this.prompts); 
       console.log('Resources:', this.resources);

@@ -9,7 +9,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
-
+import { OpenAiService } from './services/open-ai.service';
+// import { McpClientComponent } from './mcp-client/mcp-client.component';
 @Component({
   selector: 'app-root',
   imports: [InputBoxComponent, ChatbotComponent, SidebarComponent, MatSidenavModule, 
@@ -21,13 +22,13 @@ import { MatListModule } from '@angular/material/list';
 })
 export class AppComponent {
   messages: any[] = [];
-  title = 'FieldOn chatbot';
+  title = 'AI powered chatbot';
   isSidebarOpen = true;
   chatMessages: any[] = [
     { sender: 'bot', content: 'Hello! How can I assist you today?', timestamp: new Date() }
   ];
 
-  constructor(private mcpService: McpService) {}
+  constructor(private mcpService: McpService, private openAIService: OpenAiService) {}
 
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -36,9 +37,18 @@ export class AppComponent {
   handleNewMessage(message: string) {
     console.log(message);
     this.chatMessages.push({ sender: 'user', content: message, timestamp: new Date() });
+    this.openAIService.createAgent(message).then((response: any) => {
+      console.log("AI response : ", response);
+      this.chatMessages.push({ sender: 'bot', content: response, timestamp: new Date() });
+    }).catch((error: any) => {
+      console.error('Error getting response:', error);
+      this.chatMessages.push({ sender: 'bot', content: 'Sorry, I encountered an error while processing your request.', timestamp: new Date() });
+    });
     // Simulate bot response
     setTimeout(() => {
       this.chatMessages.push({ sender: 'bot', content: 'Thanks for your message! I\'m processing your request.', timestamp: new Date() });
     }, 1000);
   }
+
+  
 }

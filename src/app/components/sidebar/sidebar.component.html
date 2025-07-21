@@ -8,6 +8,7 @@
 
   <div class="sidebar-scrollable">
     <mat-nav-list>
+        <app-mcp-client></app-mcp-client>
       @for (chat of chats; track chat) {
       <mat-list-item>
         <mat-icon matListItemIcon>{{chat.icon}}</mat-icon>

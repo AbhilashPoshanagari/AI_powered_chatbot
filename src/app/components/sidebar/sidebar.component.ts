@@ -5,6 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatNavList } from '@angular/material/list';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
+import { McpClientComponent } from '../../mcp-client/mcp-client.component';
 interface NamedItem {
   name: string;
 }
@@ -19,7 +20,7 @@ interface Tool extends NamedItem {
 
 @Component({
   selector: 'app-sidebar',
-  imports: [MatTabsModule, MatIconModule, MatNavList, MatListModule, CommonModule],
+  imports: [MatTabsModule, MatIconModule, MatNavList, MatListModule, CommonModule, McpClientComponent],
   providers: [McpService],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',

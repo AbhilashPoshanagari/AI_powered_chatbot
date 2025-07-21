@@ -44,3 +44,5 @@ Thumbs.db
 /.angular
 /.vscode
 /.editorconfig
+/.env
+/api_keys.ts

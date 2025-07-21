@@ -2,7 +2,7 @@
   <!-- Moved input-actions outside of input-box and to the bottom -->
   <div class="input-box">
     <mat-form-field appearance="fill" class="full-width">
-      <textarea matInput [(ngModel)]="message" placeholder="Message FieldOn..." 
+      <textarea matInput [(ngModel)]="message" placeholder="Message..." 
                 (keydown.enter)="submitMessage()"></textarea>
     </mat-form-field>
     <button mat-icon-button (click)="submitMessage()" [disabled]="!message.trim()" class="send-button">
@@ -17,7 +17,7 @@
     <mat-menu #toolsMenu="matMenu" class="action-menu">
       @for (tool of tools; track tool) {
         <button mat-menu-item (click)="selectTool(tool.name)">
-          <span>{{tool.displayName}}</span>
+          <span>{{tool.name}}</span>
         </button>
       }
     </mat-menu>
@@ -28,7 +28,7 @@
     <mat-menu #resourcesMenu="matMenu" class="action-menu">
       @for (resource of resources; track resource) {
         <button mat-menu-item (click)="selectResource(resource.name)">
-          <span>{{resource.displayName}}</span>
+          <span>{{resource.name}}</span>
         </button>
       }
     </mat-menu>
@@ -39,7 +39,7 @@
     <mat-menu #promptsMenu="matMenu" class="action-menu">
       @for (prompt of prompts; track prompt) {
         <button mat-menu-item (click)="selectPrompt(prompt.name)">
-          <span>{{prompt.displayName}}</span>
+          <span>{{prompt.name}}</span>
         </button>
       }
     </mat-menu>
