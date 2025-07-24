@@ -26,7 +26,8 @@
   padding: 12px 16px;
   border-radius: 18px;
   position: relative;
-  font-size: 0.95rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.0rem;
   line-height: 1.5;
 }
 

@@ -15,10 +15,10 @@ export class RestApiService {
    getRequest(url: string) {
     return this.httpClient.get<any>(url).pipe(
       map((res) => {
-        if (res.status === "OK") {
+        if (res.status === 200) {
           return {status: res.status, open_ai: res.openai_functions };
         } else {
-          return { error: 'something went wrong' };
+          return { status: 500, error: 'something went wrong' };
         }
       }),
       catchError((err) => {

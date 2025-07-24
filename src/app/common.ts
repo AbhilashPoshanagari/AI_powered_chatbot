@@ -5,3 +5,16 @@ export interface NamedItem {
     uri?: string; // Optional for resources
     parameters?: any; // Optional for tools
 }
+
+export interface OpenAIFunctions {
+  type: string,
+  function: {
+    name: string,
+    description: string,
+    parameters: {
+      properties: any
+      required: Array<string>
+      type: string
+    }
+  }
+}

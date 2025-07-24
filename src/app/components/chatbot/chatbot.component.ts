@@ -1,10 +1,11 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { MarkdownModule } from 'ngx-markdown';
 
 @Component({
   selector: 'app-chatbot',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, MarkdownModule],
   templateUrl: './chatbot.component.html',
   styleUrl: './chatbot.component.css',
   standalone: true

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, AfterViewInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common'; 
 // import { MatButtonModule } from '@angular/material/button';
@@ -10,7 +10,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { McpService } from '../../services/mcp.service';
 import { NamedItem } from '../../common'; // Assuming you have a common.ts file for interfaces
-
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs';
 @Component({
   selector: 'app-input-box',
   imports: [FormsModule, ReactiveFormsModule, CommonModule, MatMenuModule, 
@@ -19,7 +20,7 @@ import { NamedItem } from '../../common'; // Assuming you have a common.ts file 
   styleUrl: './input-box.component.css',
   standalone: true
 })
-export class InputBoxComponent implements AfterViewInit {
+export class InputBoxComponent implements OnInit, OnDestroy {
   @Output() sendMessage = new EventEmitter<string>();
   @Output() sendTool = new EventEmitter<Array<NamedItem>>();
   @Output() sendResource = new EventEmitter<string>();
@@ -36,8 +37,25 @@ export class InputBoxComponent implements AfterViewInit {
   selectedTool: string | null = null;
   selectedResource: string | null = null;
   selectedPrompt: string | null = null;
+  isConnected: boolean = false;
+  private subs = new Subscription();
+  constructor(private mcpService: McpService) {
 
-  constructor(private mcpService: McpService) {}
+  }
+
+
+  ngOnInit(): void {
+    this.subs.add(
+          this.mcpService.connectionStatus$
+            .pipe(filter(status => status === true))  // <--- FIXED HERE
+            .subscribe((state) => {
+              console.log("mcp input-box : ", state)
+              this.subs.add(this.mcpService.tools$.subscribe(tools => this.tools = tools));
+              this.subs.add(this.mcpService.promtps$.subscribe(prompts => this.prompts = prompts));
+              this.subs.add(this.mcpService.resources$.subscribe(resources => this.resources = resources));
+            })
+        );
+  }
 
   submitMessage() {
     if (this.message.trim()) {
@@ -63,32 +81,10 @@ export class InputBoxComponent implements AfterViewInit {
     this.selectedPrompt = prompt;
     this.showPromptsMenu = false;
     // You can add logic here to handle the selected prompt
-    
   }
 
-  async ngAfterViewInit(): Promise<void> {
-    // Logic that needs to run after the view has been initialized
-     try {
-      await this.mcpService.connect();
-      this.mcpService.listTools().subscribe((tools: any) => {
-        console.log("Tools 1 : ", tools)
-        this.tools = tools.tools;
-      })
-      this.mcpService.listPrompts().subscribe((prompts: any) => {
-        console.log("Prompts 1 : ", prompts)
-          this.prompts = prompts.prompts;
-      });
-      this.mcpService.listResources().subscribe((resources: any) => {
-        console.log("Resources 1 : ", resources)
-          this.resources = resources.resources;
-      });
-      console.log('Tools:', this.tools);
-      console.log('Prompts:', this.prompts); 
-      console.log('Resources:', this.resources);
-      // await this.mcpService.disconnect();
-    } catch (error) {
-      console.error('MCP interaction failed:', error);
-    }
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 
   // async sendPrompt(promptName: string) {

@@ -3,7 +3,11 @@ import { McpService } from '../services/mcp.service';
 import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
+import { McpElicitationService } from '../services/mcp/mcp-elicitation.service';
+interface ElicitResponse {
+  action: 'accept' | 'decline' | 'cancel';
+  data?: any;
+}
 @Component({
   selector: 'app-mcp-client',
   imports: [CommonModule, FormsModule],
@@ -12,16 +16,18 @@ import { FormsModule } from '@angular/forms';
   standalone: true
 })
 export class McpClientComponent implements OnInit, OnDestroy {
-  isConnected = false;
+  isConnected: boolean = false;
   notifications: any[] = [];
   currentElicitRequest: any = null;
+  loader: boolean = false;
   private subscriptions: Subscription[] = [];
 
-  constructor(private mcpService: McpService) {}
+  constructor(private mcpService: McpService, private elicitationService: McpElicitationService) {}
 
   ngOnInit(): void {
     this.subscriptions.push(
-      this.mcpService.connectionStatus$.subscribe((status: any) => {
+      this.mcpService.connectionStatus$.subscribe((status: boolean) => {
+        console.log("MCP client component : ", status);
         this.isConnected = status;
       }),
       
@@ -30,18 +36,21 @@ export class McpClientComponent implements OnInit, OnDestroy {
       }),
       
       this.mcpService.elicitRequests$.subscribe((request: any) => {
+        console.log("Request : ", request);
         this.currentElicitRequest = request;
       })
     );
-
-    this.connect();
+    // this.connect();
   }
 
   async connect() {
     try {
+      this.loader = true;
       await this.mcpService.connect();
+      this.loader = false;
     } catch (error) {
       console.error('Connection error:', error);
+      this.loader = false;
     }
   }
 
@@ -51,17 +60,22 @@ export class McpClientComponent implements OnInit, OnDestroy {
 
   submitElicitForm(formData: any) {
     if (this.currentElicitRequest) {
+      const requestId: number | string | null = this.elicitationService.getCurrentRequestId();
       this.mcpService.submitElicitResponse({
         action: 'accept',
         content: formData
       });
+      console.log("Server response : ",{
+        action: 'accept',
+        content: formData
+      })
       this.currentElicitRequest = null;
     }
   }
 
   cancelElicit() {
     this.mcpService.submitElicitResponse({
-      action: 'cancel'
+      action: 'cancel',
     });
     this.currentElicitRequest = null;
   }

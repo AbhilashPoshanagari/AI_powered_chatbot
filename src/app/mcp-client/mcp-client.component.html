@@ -5,7 +5,7 @@
 <div *ngIf="isConnected; else disconnected">
   <!-- <h5>Connected to MCP Server</h5> -->
   <!-- Elicit Form -->
-  <div *ngIf="currentElicitRequest" class="elicit-form">
+  <!-- <div *ngIf="currentElicitRequest" class="elicit-form">
     <h3>{{ currentElicitRequest.message }}</h3>
     <form (ngSubmit)="submitElicitForm(form.value)" #form="ngForm">
       <div *ngFor="let field of currentElicitRequest.fields" class="form-field">
@@ -47,7 +47,7 @@
       <button type="submit">Submit</button>
       <button type="button" (click)="cancelElicit()">Cancel</button>
     </form>
-  </div>
+  </div> -->
   
   <!-- Notifications -->
   <div class="notifications">
@@ -57,8 +57,10 @@
     </div>
   </div>
 </div>
-
 <ng-template #disconnected>
   <!-- <h5>Disconnected from MCP Server</h5> -->
   <button (click)="connect()">Connect</button>
+  @if (loader) {
+    <img src="gif/Spinner.gif"/>
+  }
 </ng-template>

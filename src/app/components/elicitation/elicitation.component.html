@@ -1,0 +1,119 @@
+<!-- elicitation.component.html -->
+<div *ngIf="formAvailable">
+<div *ngIf="schema$ | async as schema; else noRequest" class="elicitation-container">
+  <div *ngIf="form$ | async as form">
+    <h2>Elicitation Request</h2>
+    <p *ngIf="currentRequest?.params?.message">{{ currentRequest.params.message }}</p>
+    
+    <div *ngIf="validationErrors.length" class="alert alert-danger">
+      <h4>Validation Errors</h4>
+      <ul>
+        <li *ngFor="let error of validationErrors">{{ error }}</li>
+      </ul>
+    </div>
+
+    <div *ngIf="!showConfirmation">
+      <form [formGroup]="form" (ngSubmit)="onSubmit(form)">
+        <div *ngFor="let fieldName of getFieldNames(schema)">
+          <ng-container [ngSwitch]="getFieldType(schema, fieldName)">
+            <!-- Text Input -->
+            <div *ngSwitchCase="'string'" class="form-group">
+              <label [for]="fieldName">
+                {{ getFieldTitle(schema, fieldName) }}
+                <span *ngIf="isFieldRequired(schema, fieldName)" class="required">*</span>
+              </label>
+              <input
+                [id]="fieldName"
+                type="text"
+                [formControlName]="fieldName"
+                class="form-control"
+                [placeholder]="getFieldDefault(schema, fieldName)"
+              />
+              <small *ngIf="getFieldDescription(schema, fieldName)" class="form-text text-muted">
+                {{ getFieldDescription(schema, fieldName) }}
+              </small>
+            </div>
+
+            <!-- Number Input -->
+            <div *ngSwitchCase="'number'" class="form-group">
+              <label [for]="fieldName">
+                {{ getFieldTitle(schema, fieldName) }}
+                <span *ngIf="isFieldRequired(schema, fieldName)" class="required">*</span>
+              </label>
+              <input
+                [id]="fieldName"
+                type="number"
+                [formControlName]="fieldName"
+                class="form-control"
+                [placeholder]="getFieldDefault(schema, fieldName)"
+                [min]="getFieldMin(schema, fieldName)"
+                [max]="getFieldMax(schema, fieldName)"
+              />
+              <small *ngIf="getFieldDescription(schema, fieldName)" class="form-text text-muted">
+                {{ getFieldDescription(schema, fieldName) }}
+              </small>
+            </div>
+
+            <!-- Select Dropdown -->
+            <div *ngSwitchCase="'enum'" class="form-group">
+              <label [for]="fieldName">
+                {{ getFieldTitle(schema, fieldName) }}
+                <span *ngIf="isFieldRequired(schema, fieldName)" class="required">*</span>
+              </label>
+              <select
+                [id]="fieldName"
+                [formControlName]="fieldName"
+                class="form-control"
+              >
+                <option *ngIf="!isFieldRequired(schema, fieldName)" value="">(Skip)</option>
+                <option *ngFor="let option of getFieldOptions(schema, fieldName)" [value]="option">
+                  {{ option }}
+                </option>
+              </select>
+              <small *ngIf="getFieldDescription(schema, fieldName)" class="form-text text-muted">
+                {{ getFieldDescription(schema, fieldName) }}
+              </small>
+            </div>
+
+            <!-- Checkbox for Boolean -->
+            <div *ngSwitchCase="'boolean'" class="form-group form-check">
+              <input
+                type="checkbox"
+                [id]="fieldName"
+                [formControlName]="fieldName"
+                class="form-check-input"
+              />
+              <label [for]="fieldName" class="form-check-label">
+                {{ getFieldTitle(schema, fieldName) }}
+              </label>
+              <small *ngIf="getFieldDescription(schema, fieldName)" class="form-text text-muted">
+                {{ getFieldDescription(schema, fieldName) }}
+              </small>
+            </div>
+          </ng-container>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="button" (click)="cancel()" class="btn btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+
+    <div *ngIf="showConfirmation" class="confirmation-dialog">
+      <h3>Confirm Submission</h3>
+      <pre>{{ submittedData | json }}</pre>
+      
+      <div class="confirmation-actions">
+        <button (click)="confirmSubmission(true)" class="btn btn-success">Confirm</button>
+        <button (click)="confirmSubmission(false)" class="btn btn-warning">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<ng-template #noRequest>
+  <div class="no-request">
+    <p>No active elicitation request</p>
+  </div>
+</ng-template>
